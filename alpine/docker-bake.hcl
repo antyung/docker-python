@@ -11,7 +11,7 @@ variable "AWS_ECR_URI" {
 }
 
 variable "DOCKER_IMAGE_OS" {
-  default = "alpine
+  default = "alpine"
 }
 
 variable "DOCKER_IMAGE_GROUP" {
