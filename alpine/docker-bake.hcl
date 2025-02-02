@@ -58,7 +58,6 @@ target "build-amd64" {
   ]
   output   = ["type=docker"]
   tags = [
-    "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:latest-amd64",
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-amd64",
   ]
 }
@@ -71,7 +70,6 @@ target "build-arm64" {
   ]
   output   = ["type=docker"]
   tags = [
-    "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:latest-arm64",
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-arm64",
   ]
 }
@@ -84,7 +82,6 @@ target "push-amd64" {
     "linux/amd64",
   ]
   tags = [
-    "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:latest-amd64",
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-amd64",
   ]
 }
@@ -97,7 +94,6 @@ target "push-arm64" {
     "linux/arm64",
   ]
   tags = [
-    "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:latest-arm64",
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-arm64",
   ]
 }
