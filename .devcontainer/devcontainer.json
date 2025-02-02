@@ -1,0 +1,19 @@
+{
+  "image": "public.ecr.aws/w2u0w5i6/devcontainer/debian-base:bullseye",
+  "name": "python",
+  "features": {
+      "ghcr.io/antyung/devcontainers/common-utils:1": {},
+      "ghcr.io/antyung/devcontainers/build-essentials:1": {},
+      "ghcr.io/antyung/devcontainers/docker-in-docker:1": {},
+      "ghcr.io/antyung/devcontainers/golang:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": { "terminal.integrated.defaultProfile.linux": "zsh" },
+    "extensions": ["golang.Go"]
+    }
+  },
+  "containerUser": "vscode",
+  "workspaceMount": "source=${localWorkspaceFolder}/,target=/home/vscode/python,type=bind,consistency=cached", "workspaceFolder": "/home/vscode",
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode"
+}

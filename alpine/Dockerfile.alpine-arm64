@@ -1,0 +1,5 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM public.ecr.aws/w2u0w5i6/base/alpine:3.21 AS base
+
+FROM public.ecr.aws/w2u0w5i6/ci/alpine-build:3.21 AS build
