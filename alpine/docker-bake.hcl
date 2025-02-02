@@ -35,27 +35,21 @@ target "settings" {
 target "test-amd64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-amd64"
-  platforms = [
-    "linux/amd64",
-  ]
+  platforms = ["linux/amd64"]
   tags = []
 }
 
 target "test-arm64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-arm64"
-  platforms = [
-    "linux/arm64",
-  ]
+  platforms = ["linux/arm64"]
   tags = []
 }
 
 target "build-amd64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-amd64"
-  platforms = [
-    "linux/amd64",
-  ]
+  platforms = ["linux/amd64"]
   output   = ["type=docker"]
   tags = [
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-amd64",
@@ -65,9 +59,7 @@ target "build-amd64" {
 target "build-arm64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-arm64"
-  platforms = [
-    "linux/arm64",
-  ]
+  platforms = ["linux/arm64"]
   output   = ["type=docker"]
   tags = [
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-arm64",
@@ -78,9 +70,7 @@ target "push-amd64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-amd64"
   output   = ["type=registry"]
-  platforms = [
-    "linux/amd64",
-  ]
+  platforms = ["linux/amd64"]
   tags = [
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-amd64",
   ]
@@ -90,9 +80,7 @@ target "push-arm64" {
   inherits = ["settings"]
   dockerfile = "Dockerfile.alpine-arm64"
   output   = ["type=registry"]
-  platforms = [
-    "linux/arm64",
-  ]
+  platforms = ["linux/arm64"]
   tags = [
     "${AWS_ECR_URI}/${DOCKER_IMAGE_GROUP}/${DOCKER_IMAGE}:${DOCKER_TAG}-arm64",
   ]
