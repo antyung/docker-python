@@ -72,7 +72,7 @@ jobs:
         uses: docker/bake-action@v5
         with:
           targets: "push-${{matrix.architecture}}"
-          workdir: "./${{env.DOCKER_IMAGE}}"
+          workdir: "./${{env.DOCKER_IMAGE_OS}}"
 
   create-manifest:
     runs-on: ubuntu-latest
