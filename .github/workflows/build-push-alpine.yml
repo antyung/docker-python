@@ -29,6 +29,12 @@ jobs:
     strategy:
       matrix:
         architecture: [amd64, arm64]
+        include:
+          - architecture: amd64
+            runner: ubuntu-latest
+          - architecture: arm64
+            runner: ubuntu-latest-arm64
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: 'checkout'
         uses: actions/checkout@v4
