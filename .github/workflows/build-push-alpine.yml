@@ -68,13 +68,13 @@ jobs:
         run: |
           aws ecr-public create-repository --repository-name "${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}" --region "${{env.AWS_DEFAULT_REGION}}" || true
 
-      - name: "build-push-${{matrix.architecture}}"
+      - name: "build-${{matrix.architecture}}"
         uses: docker/bake-action@v5
         with:
           targets: "build-${{matrix.architecture}}"
           workdir: "./${{env.DOCKER_IMAGE_OS}}"
 
-      - name: 'push docker image'
+      - name: "push-${{matrix.architecture}}"
         run: docker push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-${{matrix.architecture}}
 
   create-manifest:
@@ -104,13 +104,6 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
-
-      - name: 'extract version from dockerfile'
-        id: extract_version
-        run: |
-          DOCKER_TAG="$(cat ./${{env.DOCKER_IMAGE_OS}}/VERSION)"
-          echo "DOCKER_TAG=${DOCKER_TAG#v}" >> $GITHUB_ENV
-          echo "DOCKER_TAG=${DOCKER_TAG#v}"
 
       - name: 'create docker manifest final'
         run: |
