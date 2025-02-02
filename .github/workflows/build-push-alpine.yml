@@ -69,7 +69,7 @@ jobs:
           aws ecr-public create-repository --repository-name "${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}" --region "${{env.AWS_DEFAULT_REGION}}" || true
 
       - name: "build-push-${{matrix.architecture}}"
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
           targets: "build-${{matrix.architecture}}"
           workdir: "./${{env.DOCKER_IMAGE_OS}}"
