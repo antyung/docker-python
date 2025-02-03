@@ -22,5 +22,5 @@ RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYT
         CC="gcc -static-libgcc" \
         CXX="g++ -static-libgcc" \
     && make -j$SYSTEM_CPU_CORES \
-    && make test
+    && make test \
     && sudo make install
