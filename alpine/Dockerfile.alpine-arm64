@@ -9,9 +9,14 @@ WORKDIR /build
 ARG SYSTEM_CPU_PROC
 ARG PYTHON_VERSION
 
-RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o python.tar.xz
-RUN tar -xvf python.tar.xz
-RUN cd "Python-${PYTHON_VERSION}" && ./configure --prefix=/usr/local --enable-optimizations --enable-shared --with-ensurepip=install CC="gcc -static-libgcc" CXX="g++ -static-libgcc"
+RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o python.tar.xz \
+    && tar -xvf python.tar.xz
+
+RUN cd "Python-${PYTHON_VERSION}" \
+    && ./configure --prefix=/usr/local --enable-optimizations --enable-shared --with-ensurepip=install CC="gcc -static-libgcc" CXX="g++ -static-libgcc"
+
 RUN cd "Python-${PYTHON_VERSION}" && make "-j${SYSTEM_CPU_PROC}"
+
 RUN cd "Python-${PYTHON_VERSION}" && make test
+
 RUN cd "Python-${PYTHON_VERSION}" && make install
