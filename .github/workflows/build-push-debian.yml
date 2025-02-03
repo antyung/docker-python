@@ -76,6 +76,14 @@ jobs:
         run: |
           aws ecr-public create-repository --repository-name "${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}" --region "${{env.AWS_DEFAULT_REGION}}" || true
 
+      - name: 'cache build artifacts'
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: python-build-${{matrix.architecture}}-${{github.run_id}}
+          restore-keys: |
+            python-build-${{matrix.architecture}}-
+
       - name: "build-${{matrix.architecture}}"
         uses: docker/bake-action@v5
         with:

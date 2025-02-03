@@ -27,10 +27,12 @@ group "default" {
 target "settings" {
   context = "."
   cache-from = [
-    "type=gha"
+    "type=gha",
+    "type=local,src=/tmp/.buildx-cache"
   ]
   cache-to = [
-    "type=gha,mode=max"
+    "type=gha,mode=max",
+    "type=local,dest=/tmp/.buildx-cache,mode=max"
   ]
 }
 
