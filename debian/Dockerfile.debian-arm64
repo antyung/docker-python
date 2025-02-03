@@ -1,8 +1,8 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM public.ecr.aws/w2u0w5i6/base/alpine:3.21 AS base
+FROM public.ecr.aws/w2u0w5i6/base/debian:bullseye-slim AS base
 
-FROM public.ecr.aws/w2u0w5i6/ci/alpine-build:3.21 AS build
+FROM public.ecr.aws/w2u0w5i6/ci/debian-build:bullseye AS build
 
 WORKDIR /build
 
@@ -16,8 +16,6 @@ RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYT
         --enable-optimizations \
         --enable-shared \
         --with-ensurepip=install \
-        CC="gcc -static-libgcc" \
-        CXX="g++ -static-libgcc" \
     && make -j$SYSTEM_CPU_CORES \
     && make test \
     && sudo make install

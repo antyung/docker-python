@@ -4,9 +4,6 @@ FROM public.ecr.aws/w2u0w5i6/base/alpine:3.21 AS base
 
 FROM public.ecr.aws/w2u0w5i6/ci/alpine-build:3.21 AS build
 
-RUN apk update && apk add --no-cache \
-    musl-dev gcompat make autoconf automake pkgconf
-
 WORKDIR /build
 
 ARG SYSTEM_CPU_CORES

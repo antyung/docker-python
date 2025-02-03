@@ -26,6 +26,7 @@ updates:
   - package-ecosystem: docker
     directories:
       - "/alpine/**"
+      - "/debian/**"
     schedule:
       interval: daily
     commit-message:

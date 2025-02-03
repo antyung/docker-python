@@ -1,19 +1,19 @@
 ---
-name: 'Build Push python-alpine'
+name: 'Build Push python-debian'
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'alpine/Dockerfile.alpine-amd64'
-      - 'alpine/Dockerfile.alpine-arm64'
-      - 'alpine/docker-bake.hcl'
+      - 'debian/Dockerfile.debian-amd64'
+      - 'debian/Dockerfile.debian-arm64'
+      - 'debian/docker-bake.hcl'
   workflow_dispatch:
 
 env:
   DOCKER_IMAGE: python
-  DOCKER_IMAGE_OS: alpine
+  DOCKER_IMAGE_OS: debian
   DOCKER_IMAGE_GROUP: dev
   AWS_DEFAULT_REGION: us-east-1
   AWS_ECR_URI: public.ecr.aws/w2u0w5i6
