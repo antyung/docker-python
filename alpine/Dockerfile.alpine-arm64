@@ -6,12 +6,12 @@ FROM public.ecr.aws/w2u0w5i6/ci/alpine-build:3.21 AS build
 
 WORKDIR /build
 
-ARG SYSTEM_CPU_CORES
+ARG SYSTEM_CPU_PROC
 ARG PYTHON_VERSION
 
 RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o python.tar.xz
 RUN tar -xvf python.tar.xz
 RUN cd "Python-${PYTHON_VERSION}" && ./configure --prefix=/usr/local --enable-optimizations --enable-shared --with-ensurepip=install CC="gcc -static-libgcc" CXX="g++ -static-libgcc"
-RUN make -j$SYSTEM_CPU_CORES
+RUN make -j"${SYSTEM_CPU_PROC}"
 RUN make test
 RUN make install
