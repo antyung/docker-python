@@ -54,6 +54,7 @@ jobs:
         with:
           role-to-assume: "${{env.AWS_OIDC_ROLE_ARN}}"
           role-session-name: "aws-oidc-${{github.repository.name}}-${{github.run_id}}"
+          aws-region: "${{env.AWS_DEFAULT_REGION}}"
 
       - name: 'login to amazon ecr public'
         id: login-ecr-public
