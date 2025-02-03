@@ -15,8 +15,8 @@ env:
   DOCKER_IMAGE: python
   DOCKER_IMAGE_OS: alpine
   DOCKER_IMAGE_GROUP: dev
-  AWS_ECR_URI: public.ecr.aws/w2u0w5i6
   AWS_DEFAULT_REGION: us-east-1
+  AWS_ECR_URI: public.ecr.aws/w2u0w5i6
   AWS_OIDC_ROLE_ARN: ${{secrets.AWS_OIDC_ROLE_ARN}}
 
 permissions:
@@ -65,9 +65,12 @@ jobs:
       - name: 'extract version from dockerfile'
         id: extract_version
         run: |
-          DOCKER_TAG="$(cat ./${{env.DOCKER_IMAGE_OS}}/VERSION)"
-          echo "DOCKER_TAG=${DOCKER_TAG#v}" >> $GITHUB_ENV
-          echo "DOCKER_TAG=${DOCKER_TAG#v}"
+          DOCKER_IMAGE_TAG="$(cat ./${{env.DOCKER_IMAGE_OS}}/VERSION)"
+          echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG#v}" >> ${GITHUB_ENV}
+          echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG#v}"
+          SYSTEM_CPU_PROC="$(grep -c ^proc /proc/cpuinfo)"
+          echo "SYSTEM_CPU_PROC=${SYSTEM_CPU_PROC}" >> ${GITHUB_ENV}
+          echo "SYSTEM_CPU_PROC=${SYSTEM_CPU_PROC}"
 
       - name: 'create ecr-public repository'
         run: |
@@ -80,7 +83,7 @@ jobs:
           workdir: "./${{env.DOCKER_IMAGE_OS}}"
 
       - name: "push-${{matrix.architecture}}"
-        run: docker push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-${{matrix.architecture}}
+        run: docker push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-${{matrix.architecture}}
 
   create-manifest:
     runs-on: ubuntu-latest
@@ -110,32 +113,26 @@ jobs:
       - name: 'extract version from dockerfile'
         id: extract_version
         run: |
-          DOCKER_TAG="$(cat ./${{env.DOCKER_IMAGE_OS}}/VERSION)"
-          echo "DOCKER_TAG=${DOCKER_TAG#v}" >> $GITHUB_ENV
-          echo "DOCKER_TAG=${DOCKER_TAG#v}"
+          DOCKER_IMAGE_TAG="$(cat ./${{env.DOCKER_IMAGE_OS}}/VERSION)"
+          echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG#v}" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG#v}"
 
       - name: 'create docker manifest final'
         run: |
-          docker manifest create ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}} \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-amd64 \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-arm64
-
-          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}} \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-amd64 --arch amd64
-
-          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}} \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-arm64 --arch arm64
-
-          docker manifest push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}
+          docker manifest create ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}} \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-amd64 \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-arm64
+          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}} \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-amd64 --arch amd64
+          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}} \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-arm64 --arch arm64
+          docker manifest push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}
 
           docker manifest create ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:latest \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-amd64 \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-arm64
-
-          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}} \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-amd64 --arch amd64
-
-          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}} \
-            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}-arm64 --arch arm64
-
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-amd64 \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-arm64
+          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}} \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-amd64 --arch amd64
+          docker manifest annotate ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}} \
+            ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:${{env.DOCKER_IMAGE_TAG}}-arm64 --arch arm64
           docker manifest push ${{env.AWS_ECR_URI}}/${{env.DOCKER_IMAGE_GROUP}}/${{env.DOCKER_IMAGE}}:latest

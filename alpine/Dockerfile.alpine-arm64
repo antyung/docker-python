@@ -3,3 +3,24 @@
 FROM public.ecr.aws/w2u0w5i6/base/alpine:3.21 AS base
 
 FROM public.ecr.aws/w2u0w5i6/ci/alpine-build:3.21 AS build
+
+RUN apk update && apk add --no-cache \
+    musl-dev gcompat make autoconf automake pkgconf
+
+WORKDIR /build
+
+ARG SYSTEM_CPU_CORES
+ARG PYTHON_VERSION
+
+RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o python.tar.xz \
+    && tar -xvf python.tar.xz \
+    && cd "Python-${PYTHON_VERSION}" \
+    && ./configure --prefix=/usr/local \
+        --enable-optimizations \
+        --enable-shared \
+        --with-ensurepip=install \
+        CC="gcc -static-libgcc" \
+        CXX="g++ -static-libgcc" \
+    && make -j$SYSTEM_CPU_CORES \
+    && make test
+    && sudo make install
