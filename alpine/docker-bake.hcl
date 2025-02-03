@@ -18,7 +18,7 @@ variable "DOCKER_IMAGE_GROUP" {
   default = "dev"
 }
 
-variable "SYSTEM_CPU_CORES" {}
+variable "SYSTEM_CPU_PROC" {}
 
 group "default" {
   targets = ["build"]
@@ -55,7 +55,7 @@ target "build-amd64" {
   platforms = ["linux/amd64"]
   output   = ["type=docker"]
   args = {
-    SYSTEM_CPU_CORES = SYSTEM_CPU_CORES
+    SYSTEM_CPU_PROC = SYSTEM_CPU_PROC
     PYTHON_VERSION = DOCKER_IMAGE_TAG
   }
   tags = [
@@ -69,7 +69,7 @@ target "build-arm64" {
   platforms = ["linux/arm64"]
   output   = ["type=docker"]
   args = {
-    SYSTEM_CPU_CORES = SYSTEM_CPU_CORES
+    SYSTEM_CPU_PROC = SYSTEM_CPU_PROC
     PYTHON_VERSION = DOCKER_IMAGE_TAG
   }
   tags = [
