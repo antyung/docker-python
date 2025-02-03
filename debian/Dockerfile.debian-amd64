@@ -4,19 +4,27 @@ FROM public.ecr.aws/w2u0w5i6/base/debian:bullseye-slim AS base
 
 FROM public.ecr.aws/w2u0w5i6/ci/debian-build:bullseye AS build
 
-WORKDIR /build
+WORKDIR /build-cache
 
 ARG SYSTEM_CPU_PROC
 ARG PYTHON_VERSION
 
-RUN curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o python.tar.xz \
-    && tar -xvf python.tar.xz
+RUN --mount=type=cache,target=/build-cache \
+    curl -fSSL "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz" -o /build-cache/python.tar.xz \
+    && tar -xvf /build-cache/python.tar.xz -C /build-cache
 
-RUN cd "Python-${PYTHON_VERSION}" \
+RUN --mount=type=cache,target=/build-cache \
+    cd "/build-cache/Python-${PYTHON_VERSION}" \
     && ./configure --prefix=/usr/local --enable-optimizations --enable-shared --with-ensurepip=install
 
-RUN cd "Python-${PYTHON_VERSION}" && make "-j${SYSTEM_CPU_PROC}"
+RUN --mount=type=cache,target=/build-cache \
+    cd "/build-cache/Python-${PYTHON_VERSION}" \
+    && make "-j${SYSTEM_CPU_PROC}"
 
-RUN cd "Python-${PYTHON_VERSION}" && make test
+RUN --mount=type=cache,target=/build-cache \
+    cd "/build-cache/Python-${PYTHON_VERSION}" \
+    && make test
 
-RUN cd "Python-${PYTHON_VERSION}" && make install
+RUN --mount=type=cache,target=/build-cache \
+    cd "/build-cache/Python-${PYTHON_VERSION}" \
+    && make install
